@@ -1,0 +1,26 @@
+{
+  "name": "bootstrap-birthday",
+  "version": "1.0.0",
+  "authors": [
+    "Lóna Lore"
+  ],
+  "description": "A simple birthday date picker for Bootstrap 3.",
+  "main": "bootstrap-birthday.js",
+  "keywords": [
+    "bootstrap",
+    "datepicker",
+    "birthday"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/lonalore/bootstrap-birthday",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.0"
+  }
+}
