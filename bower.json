@@ -22,7 +22,8 @@
     "README.md",
     ".gitignore",
     "Gruntfile.js",
-    "package.json"
+    "package.json",
+    "test.html"
   ],
   "dependencies": {
     "jquery": ">=1.8.0"

@@ -65,25 +65,344 @@
      */
     placeholder: true,
 
-    // CALLBACKS.
-    onChangeYear: function() {},
-    onChangeMonth: function() {},
-    onChangeDay: function() {}
+    tabindex: null,
+
+    // Localization.
+    text: {
+      year: "Year",
+      month: "Month",
+      day: "Day",
+      months: {
+        short: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec"
+        ],
+        long: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ]
+      }
+    },
+
+    // Widget options.
+    widget: {
+      wrapper: {
+        class: 'row'
+      },
+      wrapperYear: {
+        class: 'col-xs-4'
+      },
+      wrapperMonth: {
+        class: 'col-xs-4'
+      },
+      wrapperDay: {
+        class: 'col-xs-4'
+      },
+      selectYear: {
+        name: 'birthday[year]',
+        class: 'form-control birthday-picker-year'
+      },
+      selectMonth: {
+        name: 'birthday[month]',
+        class: 'form-control birthday-picker-month'
+      },
+      selectDay: {
+        name: 'birthday[day]',
+        class: 'form-control birthday-picker-day'
+      }
+    },
+
+    // Callback function.
+    onChange: function () {
+    }
+
   };
 
-  $.fn.bootstrapBirthday = function(options) {
+  $.fn.bootstrapBirthday = function (options) {
     // Create namespace.
     var bsBD = {};
 
-    var init = function () {
+    var init = function (element) {
       // Merge options.
       bsBD.settings = $.extend({}, defaults, options);
+      // Save initial element for later use.
+      bsBD.$element = $(element);
 
-
+      createHtmlSkeleton();
+      createHtmlWidget();
     };
 
-    // Run init.
-    init();
+    /**
+     * Creates HTML picker skeleton.
+     */
+    var createHtmlSkeleton = function () {
+      bsBD.$wrapper = $("<div></div>");
+      bsBD.$wrapper.attr('class', bsBD.settings.widget.wrapper.class);
+
+      bsBD.$wrapperYear = $("<div></div>");
+      bsBD.$wrapperYear.attr('class', bsBD.settings.widget.wrapperYear.class);
+
+      bsBD.$wrapperMonth = $("<div></div>");
+      bsBD.$wrapperMonth.attr('class', bsBD.settings.widget.wrapperMonth.class);
+
+      bsBD.$wrapperDay = $("<div></div>");
+      bsBD.$wrapperDay.attr('class', bsBD.settings.widget.wrapperDay.class);
+
+      bsBD.$year = $("<select></select>");
+      bsBD.$year.attr('name', bsBD.settings.widget.selectYear.name);
+      bsBD.$year.attr('class', bsBD.settings.widget.selectYear.class);
+
+      bsBD.$month = $("<select></select>");
+      bsBD.$month.attr('name', bsBD.settings.widget.selectMonth.name);
+      bsBD.$month.attr('class', bsBD.settings.widget.selectMonth.class);
+
+      bsBD.$day = $("<select></select>");
+      bsBD.$day.attr('name', bsBD.settings.widget.selectDay.name);
+      bsBD.$day.attr('class', bsBD.settings.widget.selectDay.class);
+    };
+
+    /**
+     * Creates HTML widget.
+     */
+    var createHtmlWidget = function () {
+      bsBD.$wrapperYear.append(bsBD.$year);
+      bsBD.$wrapperMonth.append(bsBD.$month);
+      bsBD.$wrapperDay.append(bsBD.$day);
+
+      switch (bsBD.settings.dateFormat) {
+        case 'bigEndian':
+          bsBD.$wrapper
+            .append(bsBD.$wrapperYear)
+            .append(bsBD.$wrapperMonth)
+            .append(bsBD.$wrapperDay);
+
+          if (bsBD.settings.tabindex != null) {
+            bsBD.$year.attr('tabindex', bsBD.settings.tabindex);
+            bsBD.$month.attr('tabindex', bsBD.settings.tabindex++);
+            bsBD.$day.attr('tabindex', bsBD.settings.tabindex++);
+          }
+          break;
+
+        case 'littleEndian':
+          bsBD.$wrapper
+            .append(bsBD.$wrapperDay)
+            .append(bsBD.$wrapperMonth)
+            .append(bsBD.$wrapperYear);
+
+          if (bsBD.settings.tabindex != null) {
+            bsBD.$day.attr('tabindex', bsBD.settings.tabindex);
+            bsBD.$month.attr('tabindex', bsBD.settings.tabindex++);
+            bsBD.$year.attr('tabindex', bsBD.settings.tabindex++);
+          }
+          break;
+
+        case 'middleEndian':
+        default:
+          bsBD.$wrapper
+            .append(bsBD.$wrapperMonth)
+            .append(bsBD.$wrapperDay)
+            .append(bsBD.$wrapperYear);
+
+          if (bsBD.settings.tabindex != null) {
+            bsBD.$month.attr('tabindex', bsBD.settings.tabindex);
+            bsBD.$day.attr('tabindex', bsBD.settings.tabindex++);
+            bsBD.$year.attr('tabindex', bsBD.settings.tabindex++);
+          }
+          break;
+      }
+
+      // Add the option placeholders if specified.
+      if (bsBD.settings.placeholder) {
+        $("<option value='0'>" + bsBD.settings.text.year + "</option>")
+          .appendTo(bsBD.$year);
+        $("<option value='0'>" + bsBD.settings.text.month + "</option>")
+          .appendTo(bsBD.$month);
+        $("<option value='0'>" + bsBD.settings.text.day + "</option>")
+          .appendTo(bsBD.$day);
+      }
+
+      // Make text input hidden.
+      $(this).attr('type', 'hidden');
+
+      // Build the initial option sets.
+      var todayDate = new Date();
+      var todayYear = todayDate.getFullYear();
+      var startYear = todayYear - bsBD.settings.minAge;
+      var endYear = todayYear - bsBD.settings.maxAge;
+
+      if (bsBD.settings.futureDates && bsBD.settings.maxYear != todayYear) {
+        if (bsBD.settings.maxYear > 1000) {
+          startYear = bsBD.settings.maxYear;
+        }
+        else {
+          startYear = todayYear + bsBD.settings.maxYear;
+        }
+      }
+
+      for (var i = startYear; i >= endYear; i--) {
+        $("<option></option>")
+          .attr("value", i)
+          .text(i)
+          .appendTo(bsBD.$year);
+      }
+
+      for (var j = 0; j < 12; j++) {
+        $("<option></option>")
+          .attr("value", j + 1)
+          .text(bsBD.settings.text.months[bsBD.settings.monthFormat][j])
+          .appendTo(bsBD.$month);
+      }
+
+      for (var k = 1; k < 32; k++) {
+        $("<option></option>")
+          .attr("value", k)
+          .text(k)
+          .appendTo(bsBD.$day);
+      }
+
+      // Hide initial text input.
+      bsBD.$element.attr('type', 'hidden');
+
+      // Append widget to DOM.
+      bsBD.$element.after(bsBD.$wrapper);
+
+      // Set the default date if given.
+      setDefaultValue();
+
+      // Update the option sets according to options and user selections.
+      bsBD.$wrapper.change(function () {
+        // Today date values.
+        var todayDate = new Date();
+        var todayMonth = todayDate.getMonth() + 1;
+        var todayDay = todayDate.getDate();
+        // Currently selected values.
+        var selectedYear = parseInt(bsBD.$year.val(), 10);
+        var selectedMonth = parseInt(bsBD.$month.val(), 10);
+        var selectedDay = parseInt(bsBD.$day.val(), 10);
+        // Number of days in currently selected year/month.
+        var actMaxDay = (new Date(selectedYear, selectedMonth, 0)).getDate();
+        // Max values currently in the markup.
+        var curMaxMonth = parseInt(bsBD.$month.children(":last").val());
+        var curMaxDay = parseInt(bsBD.$day.children(":last").val());
+
+        // Dealing with the number of days in a month.
+        // http://bugs.jquery.com/ticket/3041
+        if (curMaxDay > actMaxDay) {
+          while (curMaxDay > actMaxDay) {
+            bsBD.$day.children(":last").remove();
+            curMaxDay--;
+          }
+        }
+        else {
+          if (curMaxDay < actMaxDay) {
+            while (curMaxDay < actMaxDay) {
+              curMaxDay++;
+              bsBD.$day.append("<option value=" + curMaxDay + ">" + curMaxDay + "</option>");
+            }
+          }
+        }
+
+        // Dealing with future months/days in current year or months/days that
+        // fall after the minimum age.
+        if (!bsBD.settings.futureDates && selectedYear == startYear) {
+          if (curMaxMonth > todayMonth) {
+            while (curMaxMonth > todayMonth) {
+              bsBD.$month.children(":last").remove();
+              curMaxMonth--;
+            }
+            // Reset the day selection.
+            bsBD.$day.children(":first").attr("selected", "selected");
+          }
+          if (selectedMonth === todayMonth) {
+            while (curMaxDay > todayDay) {
+              bsBD.$day.children(":last").remove();
+              curMaxDay -= 1;
+            }
+          }
+        }
+
+        // Adding months back that may have been removed.
+        // http://bugs.jquery.com/ticket/3041
+        if (selectedYear != startYear && curMaxMonth != 12) {
+          while (curMaxMonth < 12) {
+            bsBD.$month.append("<option value=" + (curMaxMonth + 1) + ">" + bsBD.settings.text.months[bsBD.settings.monthFormat][curMaxMonth] + "</option>");
+            curMaxMonth++;
+          }
+        }
+
+        // Update the hidden date.
+        if ((selectedYear * selectedMonth * selectedDay) != 0) {
+          if (selectedMonth < 10) {
+            selectedMonth = "0" + selectedMonth;
+          }
+
+          if (selectedDay < 10) {
+            selectedDay = "0" + selectedDay;
+          }
+
+          var hiddenDate = selectedYear + "-" + selectedMonth + "-" + selectedDay;
+
+          bsBD.$element.val(hiddenDate);
+          bsBD.settings.onChange(hiddenDate);
+        }
+      });
+    };
+
+    /**
+     * Set default value if given.
+     */
+    var setDefaultValue = function () {
+      var value = bsBD.$element.val();
+
+      if (value != "") {
+        var dP = value.split("-");
+        var date;
+
+        switch (bsBD.settings.dateFormat) {
+          case 'bigEndian':
+            date = new Date(dP[0] + "-" + dP[1] + "-" + dP[2] + "T00:00:00");
+            break;
+
+          case 'littleEndian':
+            date = new Date(dP[2] + "-" + dP[1] + "-" + dP[0] + "T00:00:00");
+            break;
+
+          case 'middleEndian':
+          default:
+            date = new Date(dP[2] + "-" + dP[0] + "-" + dP[1] + "T00:00:00");
+            break;
+        }
+
+        if (date) {
+          bsBD.$year.val(date.getFullYear());
+          bsBD.$month.val(date.getMonth() + 1);
+          bsBD.$day.val(date.getDate());
+        }
+      }
+    };
+
+    // Run!
+    init(this);
   };
 
 })(jQuery);
