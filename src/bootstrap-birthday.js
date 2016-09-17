@@ -65,6 +65,9 @@
      */
     placeholder: true,
 
+    /**
+     * The tabindex setting determines the tab order of select elements.
+     */
     tabindex: null,
 
     // Localization.
