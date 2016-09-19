@@ -18,6 +18,8 @@ Birthday picker for Bootstrap 3. It uses three select boxes to choose a date, an
 ```
 It also adds an option list to each of the select boxes, changing the options dynamically based on plugin settings and user interactions.
 
+[Try out a demonstration](https://lonalore.github.io/bootstrap-birthday/)
+
 ## Requirements
 
 - jQuery >= 1.9.1
