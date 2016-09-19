@@ -108,7 +108,7 @@ $('#element').bootstrapBirthday({
 });
 ```
 
-*For more examples see **test.html** file.*
+For more examples see **test.html** file.
 
 ## Localization
 
