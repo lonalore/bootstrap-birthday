@@ -110,28 +110,35 @@
     // Widget options.
     widget: {
       wrapper: {
-        class: 'row'
+        tag: 'div',
+        class: 'input-group'
       },
       wrapperYear: {
-        class: 'col-xs-4'
+        use: true,
+        tag: 'span',
+        class: 'input-group-addon'
       },
       wrapperMonth: {
-        class: 'col-xs-4'
+        use: true,
+        tag: 'span',
+        class: 'input-group-addon'
       },
       wrapperDay: {
-        class: 'col-xs-4'
+        use: true,
+        tag: 'span',
+        class: 'input-group-addon'
       },
       selectYear: {
         name: 'birthday[year]',
-        class: 'form-control birthday-picker-year'
+        class: 'form-control input-sm'
       },
       selectMonth: {
         name: 'birthday[month]',
-        class: 'form-control birthday-picker-month'
+        class: 'form-control input-sm'
       },
       selectDay: {
         name: 'birthday[day]',
-        class: 'form-control birthday-picker-day'
+        class: 'form-control input-sm'
       }
     },
 
@@ -159,38 +166,75 @@
      * Creates HTML picker skeleton.
      */
     var createHtmlSkeleton = function () {
-      bsBD.$wrapper = $("<div></div>");
-      bsBD.$wrapper.attr('class', bsBD.settings.widget.wrapper.class);
+      bsBD.$wrapper = $("<" + bsBD.settings.widget.wrapper.tag + "/>");
+      if (bsBD.settings.widget.wrapper.class != "") {
+        bsBD.$wrapper.attr('class', bsBD.settings.widget.wrapper.class);
+      }
 
-      bsBD.$wrapperYear = $("<div></div>");
-      bsBD.$wrapperYear.attr('class', bsBD.settings.widget.wrapperYear.class);
+      bsBD.$wrapperYear = $("<" + bsBD.settings.widget.wrapperYear.tag + "/>");
+      if (bsBD.settings.widget.wrapperYear.class != "") {
+        bsBD.$wrapperYear.attr('class', bsBD.settings.widget.wrapperYear.class);
+      }
 
-      bsBD.$wrapperMonth = $("<div></div>");
-      bsBD.$wrapperMonth.attr('class', bsBD.settings.widget.wrapperMonth.class);
+      bsBD.$wrapperMonth = $("<" + bsBD.settings.widget.wrapperMonth.tag + "/>");
+      if (bsBD.settings.widget.wrapperMonth.class != "") {
+        bsBD.$wrapperMonth.attr('class', bsBD.settings.widget.wrapperMonth.class);
+      }
 
-      bsBD.$wrapperDay = $("<div></div>");
-      bsBD.$wrapperDay.attr('class', bsBD.settings.widget.wrapperDay.class);
+      bsBD.$wrapperDay = $("<" + bsBD.settings.widget.wrapperDay.tag + "/>");
+      if (bsBD.settings.widget.wrapperDay.class != "") {
+        bsBD.$wrapperDay.attr('class', bsBD.settings.widget.wrapperDay.class);
+      }
 
       bsBD.$year = $("<select></select>");
-      bsBD.$year.attr('name', bsBD.settings.widget.selectYear.name);
-      bsBD.$year.attr('class', bsBD.settings.widget.selectYear.class);
+      if (bsBD.settings.widget.selectYear.name != "") {
+        bsBD.$year.attr('name', bsBD.settings.widget.selectYear.name);
+      }
+      if (bsBD.settings.widget.selectYear.class != "") {
+        bsBD.$year.attr('class', bsBD.settings.widget.selectYear.class);
+      }
 
       bsBD.$month = $("<select></select>");
-      bsBD.$month.attr('name', bsBD.settings.widget.selectMonth.name);
-      bsBD.$month.attr('class', bsBD.settings.widget.selectMonth.class);
+      if (bsBD.settings.widget.selectMonth.name != "") {
+        bsBD.$month.attr('name', bsBD.settings.widget.selectMonth.name);
+      }
+      if (bsBD.settings.widget.selectMonth.class != "") {
+        bsBD.$month.attr('class', bsBD.settings.widget.selectMonth.class);
+      }
 
       bsBD.$day = $("<select></select>");
-      bsBD.$day.attr('name', bsBD.settings.widget.selectDay.name);
-      bsBD.$day.attr('class', bsBD.settings.widget.selectDay.class);
+      if (bsBD.settings.widget.selectDay.name != "") {
+        bsBD.$day.attr('name', bsBD.settings.widget.selectDay.name);
+      }
+      if (bsBD.settings.widget.selectDay.class != "") {
+        bsBD.$day.attr('class', bsBD.settings.widget.selectDay.class);
+      }
     };
 
     /**
      * Creates HTML widget.
      */
     var createHtmlWidget = function () {
-      bsBD.$wrapperYear.append(bsBD.$year);
-      bsBD.$wrapperMonth.append(bsBD.$month);
-      bsBD.$wrapperDay.append(bsBD.$day);
+      if (bsBD.settings.widget.wrapperYear.use == true) {
+        bsBD.$wrapperYear.append(bsBD.$year);
+      }
+      else {
+        bsBD.$wrapperYear = bsBD.$year;
+      }
+
+      if (bsBD.settings.widget.wrapperMonth.use == true) {
+        bsBD.$wrapperMonth.append(bsBD.$month);
+      }
+      else {
+        bsBD.$wrapperMonth = bsBD.$month;
+      }
+
+      if (bsBD.settings.widget.wrapperDay.use == true) {
+        bsBD.$wrapperDay.append(bsBD.$day);
+      }
+      else {
+        bsBD.$wrapperDay = bsBD.$day;
+      }
 
       switch (bsBD.settings.dateFormat) {
         case 'bigEndian':
