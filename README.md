@@ -1,6 +1,6 @@
 # Bootstrap Birthday Picker
 
-[![Get this with Bower](https://img.shields.io/bower/v/bootstrap-birthday.svg)](https://benschwarz.github.io/bower-badges/embed.html?pkgname=bootstrap-birthday#install-instruction) [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/lonalore/bootstrap-birthday/blob/master/LICENSE) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/) [![Gittip](https://img.shields.io/gittip/lonalore.svg)](https://www.gittip.com/lonalore/)
+[![Get this with Bower](https://img.shields.io/bower/v/bootstrap-birthday.svg)](https://benschwarz.github.io/bower-badges/embed.html?pkgname=bootstrap-birthday#install-instruction) [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/lonalore/bootstrap-birthday/blob/master/LICENSE) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/) [![Gittip](https://img.shields.io/gittip/lonalore.svg)](https://www.gittip.com/lonalore/) [![Beerpay](https://beerpay.io/lonalore/bootstrap-birthday/badge.svg?style=flat)](https://beerpay.io/lonalore/bootstrap-birthday)
 
 Birthday picker for Bootstrap 3. It uses three select boxes to choose a date, and tries to ensure that the date is valid. It also has a number of options, making it somewhat customizable. The birthday picker (by default) generates the following markup:
 ```html
